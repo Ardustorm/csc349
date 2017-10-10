@@ -26,7 +26,6 @@ def numpy(A):
     return np.median(A)
 
 def medSortW(A):
-    print("\n\nmedSort: ", medSort(A, 0, len(A)-1) )
     return medSort(A, 0, len(A)-1)
 
 def medRandW(A):
@@ -52,7 +51,7 @@ for N in sizes:
         for i in range(runs):
             
             print( timeit.timeit("{func}(lst)".format(func=func),
-                                   setup="from __main__ import setup, {funcs} \nlst=setup({size})".format(funcs=", ".join(functions), size=N), number=1) , ", ", end='', flush=True)
+                                   setup="from __main__ import setup, {func} \nlst=setup({size})".format(func=func, size=N), number=1) , ", ", end='', flush=True)
         print()
 
 

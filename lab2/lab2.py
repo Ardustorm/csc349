@@ -1,13 +1,5 @@
 import numpy as np
 
-
-
-def swap0(A, i, j):
-    if(i!=j):
-        A[i] = A[i]+A[j]
-        A[j] = A[i]-A[j]
-        A[i] = A[i]-A[j]
-
 def swap(A, i, j):
     if(i!=j):
         t = A[i]
@@ -36,6 +28,11 @@ def medSort(A, i, j):
     quicksort(A, i, j)
     return A[(j-i)//2 +i] if (j-i)%2==0 else (A[(j-i)//2 +i]+ A[(j-i)//2 +i +1])/2
 
+
+
+
+
+
 def findKth(A, i, j, k): #smalest
     x = partition(A, i, j, (j-i)//2+i)#rand ele??
     if k==x+1:
@@ -45,33 +42,16 @@ def findKth(A, i, j, k): #smalest
     else:
         return findKth(A, x+1, j, k)
 
-
-def findKth_LUKE(A, start, end, k):  # kth smallest number (indexing at 0)
-    x = partition(A, start, end, (end-start)//2 + start)
-    if k==x:
-        return A[x]
-    elif (k < x):
-        return findKth(A, start, x-1, k)
-    else: 
-        return findKth(A, x+1, end, k-x-1)
-    
 def medRand(A, start, end):
     mid = (end - start)//2 + start
-
-
     if((end - start)%2 == 0):   # odd number of elements
-        return findKth(A, start, end, mid+1)
+        return findKth(A, start, end, mid+1)/1
     else:
         return (findKth(A, start, end, mid+1) + findKth(A, start, end, mid+2))/2
-    
-def insertionSort_SLOW(A, start, end):
-    k=start
-    while k<(end-start+1):
-        l=k
-        while l>start and A[l-1]>A[l]: 
-            swap(A, l, l-1)
-            l-=1
-        k+=1
+
+
+
+
         
 def insertionSort(A, i, j):
     k=1
@@ -84,99 +64,103 @@ def insertionSort(A, i, j):
         A[l+1]=m
         k+=1
 
-def breakFast__BROKEN(A, i, j, k):
+
+
+def partitionElement(A, start, end, pivot):
+    # returns index of partition after partitioning
+    x = start-1
+    for y in range(start, end+1):
+        if A[y] < pivot:
+            x = x + 1
+            swap(A, x, y)
+        elif A[y]==pivot:
+            piv=y
+            
+    if piv>=x+1:
+        x+=1
+        swap(A, piv, x)
+    else:
+        swap(A, piv, x)
+    return x
+
+
+def medFastReccur(A, i, j, k):
     n = (j-i+1)//k +1            # num of groups
     M = np.empty([n])              # new array for medians
+    
 
-    for x in range(n-1):
-        insertionSort(A, i+k*x, i+k*(x+1)-1) 
-        M[x] = A[k//2+k*x]
+    if(i==j):
+        return A[i]
 
-    insertionSort(A, j-j%k, j)
-    M[n-1] = A[(j%k)//2+j-j%k]/1  #if (j%k)%2==0 else (A[(j%k)//2+j-j%k]+ A[(j%k)//2+j-j%k+1])/2
-        
-    return M[0] if n<=1 else medFast(M, 0, n-1, k) 
-
-
-
-
-def medFast(A, i, j, k):
-    n = (j-i+1)//k +1            # num of groups
-    M = np.empty([n])              # new array for medians
-
+    
     for x in range(n-1):
         insertionSort(A, i+k*x, i+k*(x+1)-1) 
         M[x] = A[k//2+k*x]
 
     insertionSort(A, j-j%k, j)  # Sort the last group seperatly since it may be uneven
     M[n-1] = A[(j%k)//2+j-j%k]/1  #if (j%k)%2==0 else (A[(j%k)//2+j-j%k]+ A[(j%k)//2+j-j%k+1])/2
+    if(n==1):
+        return M[0]
+      
+    pivot = medFastReccur(M, 0, n-1, k)        
 
-    insertionSort(M, 0, n-1)   # TODO: JOHN, is this right??? No?
-        
+    #partition
+    x = partitionElement(A, i, j, pivot)
 
-    split = partition(A, i, j, M[ n//2 ] )
-
-    if split == n//2 or split == n//2 + 1 or split == n//2 - 1:
-        return A[split]
-    elif split > (j-i + 1)//2:  # Go left
-        #return medRand(A, split, j)
-        return medFast(A, split, j, k)
+    mid=(j-i)//2+i
+    
+    if k==x+1:
+        return A[x]
+    elif (k <= x):
+        return findKth(A, i, x-1, mid+1)
     else:
-        #return medRand(A, i, split)
-        return medFast(A, i, split, k)
+        return findKth(A, x+1, j, mid+1)
+
+def medFast(A, i, j, k):
+    n = (j-i+1)//k +1            # num of groups
+    M = np.empty([n])              # new array for medians
+
+
+    if(i==j):
+        return A[i]
 
     
-    #return M[0] if n<=1 else medFast(M, 0, n-1, k) 
+    for x in range(n-1):
+        insertionSort(A, i+k*x, i+k*(x+1)-1) 
+        M[x] = A[k//2+k*x]
 
-#######partiont was broken
-#was built not to take in a pivot
-#modifyed to take in a pivot
-#behaved perfectly (only if the passed in pivot was at index n-1)
-#lol fixed
+    insertionSort(A, j-j%k, j)  # Sort the last group seperatly since it may be uneven
+    M[n-1] = A[(j%k)//2+j-j%k]/1  #if (j%k)%2==0 else (A[(j%k)//2+j-j%k]+ A[(j%k)//2+j-j%k+1])/2
+    if(n==1):
+        return M[0]
+    
+    
+    pivot = medFastReccur(M, 0, n-1, k)        
 
-def kthTesting(n):
-    Z = list(range(n,0,-1))
-    #Z = list(range(0,n))
-    #print(Z)
-    all = True
-    for i in range(1,n+1):
-        X=list(Z)
-        k = findKth(X, 0, n-1, i)
-        #print("K: ", k)
-        #print(X)
-        quicksort(X, 0,n-1)
-        #print("kth:", X[i-1]==k)
-        if(X[i-1]!=k):
-            all = False
-    print("All Kth: ", all)
+    #partition
+    x = partitionElement(A, i, j, pivot)
 
-def kthTestingArr(A):
-    B = list(A)
-    B.sort()
-    n = len(A)
-    all = True
-    for i in range(1,n+1):
-        C=list(A)
-        k = findKth(C, 0, n-1, i)
-        #print("K: ", k)
-        #print(C)
-        #print("kth:", B[i-1]==k)
-        if(B[i-1]!=k):
-            all = False
-    return all
 
-def IST(n):
-    A = list(range(n,0,-1))
-    #print(A)
-    I=list(A)
-    insertionSort(I, 0, n-1)
-    #print(I)
-    quicksort(A, 0,n-1)
-    print("SortISF: ", 0==sum([abs(A[i]-I[i]) for i in range(n)]))
+    mid=(j-i)//2+i
+    if((j - i)%2 == 0):   # odd number of elements
+        if k==x+1:
+            return A[x]
+        elif (mid <= x):
+            return findKth(A, i, x-1, mid+1)/1
+        else:
+            return findKth(A, x+1, j, mid+1)/1
+    else:
+        if k==x+1:
+            return A[x]##FIX
+        if (mid <= x):
+            return (findKth(A, i, x-1, mid+1)+findKth(A, i, x-1, mid+2))/2
+        else:
+            return (findKth(A, x+1, j, mid+1)+findKth(A, x+1, j, mid+2))/2
+    
 
 def main():
-    MAX = 1000
-    n = 1234
+    MAX = 10000
+    n = 120
     
     #A = np.asarray(range(n))
     
@@ -207,14 +191,11 @@ def main():
     C.sort()
     print("RAND SAME ELE: ", 0==sum([abs(A[i]-C[i]) for i in range(n)]))
     
-    print("Big kth: ", kthTestingArr(A))
     
-    #print("Fast3: ", medFast(D, 0, n-1, 3))
+    print("Fast3: ", medFast(D, 0, n-1, 3))
     #print("Fast5: ", medFast(E, 0, n-1, 5))
     #print("Fast7: ", medFast(F, 0, n-1, 7))
 
-    kthTesting(100)
-    IST(500)
 
 
 if __name__ == "__main__":
