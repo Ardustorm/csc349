@@ -42,6 +42,11 @@ def findKth(A, i, j, k): #smalest
     else:
         return findKth(A, x+1, j, k)
 
+#find kth and mean with kth +1
+def findKthAndMean(A, i, j, k): #smalest
+    return (findKth(A, i, j, k) + findKth(A, i, j, k+1))/2
+
+
 def medRand(A, start, end):
     mid = (end - start)//2 + start
     if((end - start)%2 == 0):   # odd number of elements
@@ -65,56 +70,16 @@ def insertionSort(A, i, j):
         k+=1
 
 
-
+#ele may not be in list
 def partitionElement(A, start, end, pivot):
     # returns index of partition after partitioning
-    x = start-1
+    x = start
     for y in range(start, end+1):
         if A[y] < pivot:
-            x = x + 1
             swap(A, x, y)
-        elif A[y]==pivot:
-            piv=y
-            
-    if piv>=x+1:
-        x+=1
-        swap(A, piv, x)
-    else:
-        swap(A, piv, x)
+            x = x + 1
     return x
 
-
-def medFastReccur(A, i, j, k):
-    n = (j-i+1)//k +1            # num of groups
-    M = np.empty([n])              # new array for medians
-    
-
-    if(i==j):
-        return A[i]
-
-    
-    for x in range(n-1):
-        insertionSort(A, i+k*x, i+k*(x+1)-1) 
-        M[x] = A[k//2+k*x]
-
-    insertionSort(A, j-j%k, j)  # Sort the last group seperatly since it may be uneven
-    M[n-1] = A[(j%k)//2+j-j%k]/1  #if (j%k)%2==0 else (A[(j%k)//2+j-j%k]+ A[(j%k)//2+j-j%k+1])/2
-    if(n==1):
-        return M[0]
-      
-    pivot = medFastReccur(M, 0, n-1, k)        
-
-    #partition
-    x = partitionElement(A, i, j, pivot)
-
-    mid=(j-i)//2+i
-    
-    if k==x+1:
-        return A[x]
-    elif (k <= x):
-        return findKth(A, i, x-1, mid+1)
-    else:
-        return findKth(A, x+1, j, mid+1)
 
 def medFast(A, i, j, k):
     n = (j-i+1)//k +1            # num of groups
@@ -135,7 +100,7 @@ def medFast(A, i, j, k):
         return M[0]
     
     
-    pivot = medFastReccur(M, 0, n-1, k)        
+    pivot = medFast(M, 0, n-1, k)        
 
     #partition
     x = partitionElement(A, i, j, pivot)
@@ -143,19 +108,15 @@ def medFast(A, i, j, k):
 
     mid=(j-i)//2+i
     if((j - i)%2 == 0):   # odd number of elements
-        if k==x+1:
-            return A[x]
-        elif (mid <= x):
+        if (mid < x):
             return findKth(A, i, x-1, mid+1)/1
         else:
-            return findKth(A, x+1, j, mid+1)/1
+            return findKth(A, x, j, mid+1)/1 #now includes x in upper range
     else:
-        if k==x+1:
-            return A[x]##FIX
-        if (mid <= x):
-            return (findKth(A, i, x-1, mid+1)+findKth(A, i, x-1, mid+2))/2
+        if (mid < x):
+            return findKthAndMean(A, i, x-1, mid+1)
         else:
-            return (findKth(A, x+1, j, mid+1)+findKth(A, x+1, j, mid+2))/2
+            return findKthAndMean(A, x, j, mid+1)
     
 
 def main():
