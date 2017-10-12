@@ -9,7 +9,8 @@ runs = int(fin.readline())
 
 RANGE = 1000000                   # Max size of an element (+ or -)
 ITERATIONS = 100
-functions = ['numpy', 'medSortW', 'medRandW']      # Name of functions to test
+functions = ['numpy', 'medSortW', 'medRandW', 'medFastW3', 'medFastW5', 'medFastW7']      # Name of functions to test
+
 print("Sizes:", sizes)
 print("Runs:", runs)
 print("Iterations:", ITERATIONS)
@@ -31,7 +32,11 @@ def medSortW(A):
 def medRandW(A):
     return medRand(A, 0, len(A)-1)
     
-def medFastW(A):
+def medFastW3(A):
+    return medFast(A, 0, len(A)-1, 3)
+def medFastW5(A):
+    return medFast(A, 0, len(A)-1, 3)
+def medFastW7(A):
     return medFast(A, 0, len(A)-1, 3)
 
 
@@ -44,14 +49,15 @@ for N in sizes:
     print("\n\n")
     print("Array Size = ", N)
     print("\n")
-    
+    print("function name, average, standard deviation")
     for func in functions:
         print(func, ", ",  end ='')
-
+        times = []
         for i in range(runs):
             
-            print( timeit.timeit("{func}(lst)".format(func=func),
-                                   setup="from __main__ import setup, {func} \nlst=setup({size})".format(func=func, size=N), number=1) , ", ", end='', flush=True)
-        print()
+            times.append( timeit.timeit("{func}(lst)".format(func=func),
+                                   setup="from __main__ import setup, {func} \nlst=setup({size})".format(func=func, size=N), number=1))
+        print(np.mean(times), ", ", np.std(times))
+        
 
 
