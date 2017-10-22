@@ -33,6 +33,9 @@ class Node:
     def adjustInDegree(self):
         self.inDegree += 1
 
+    def __gt__(self, other):
+        return self.outDegree > other.outDegree
+
 class Graph:
     digraph = {}
     ungraph = {}

@@ -31,8 +31,6 @@ while not Q.empty():
         v = graph[vWord]
         if v.color == WHITE:
             v.d = u.d + 1
-            if v.d > 30:
-                print(v.d, v.word)
             v.pi = u
             v.color = GRAY
             Q.put(v)
