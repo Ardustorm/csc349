@@ -1,0 +1,33 @@
+
+* Word Connections
+  This series of programs are used to generate and manipulate graphs of word connections and associations.
+
+  Each program expects an input file. buildGraphs.py expects a list of words such as the csv supplied here. 
+  It then outputs 2 files, one as an undirected graph and another as a directed graph. The filenames for each
+  are listed below:
+
+  ~undirectedGraph.weCanReallyChooseAnyExtentionWeWant______YAY____butThatSeemsLikeABadIdea.p~
+
+  ~directedGraph.weCanReallyChooseAnyExtentionWeWant______YAY____butThatSeemsLikeABadIdea.p~
+
+
+
+  Every other program expects either of these two files as an input.
+
+* connected.py
+  Outputs information about the components in a graph, along with the highest degree of a vertice in each component.
+  The program only outputs with more than 4 words to make the output more readable.
+
+* degrees.py
+  Outputs a histogram of the degrees in a graph. For undirected graphs, the degree of a vertice can be seen under the 'outDegree'
+  section. (This was done so that the program is ambivilous to the type of graph it is given
+
+
+* wordChains.py
+  This program prompts the user for two words. It then attempts to find the shortest path between them, if one exists. This path can be directed or undirected, depending on the graph inputed.
+  The program then prints out the path between them.
+
+* bacon.by
+  This program outputs candidates that are the most related to the majority
+  of words (similar to the idea of 6 degrees of Kevin Bacon). The words tested
+  are based on the same critieria for the ~connected.py~ program.

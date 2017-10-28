@@ -25,9 +25,13 @@ graph[start].d=0
 
 Q.put(graph[start])
 
+
+
 while not Q.empty():
     u = Q.get()
-    for vWord in u.adj:
+    # TODO: one of these ways might sort by most used. we should use that one.
+    #for vWord in u.adj:
+    for vWord in sorted(u.adj, reverse=False):   
         v = graph[vWord]
         if v.color == WHITE:
             v.d = u.d + 1
@@ -45,6 +49,6 @@ while graph[ stack[-1] ].pi != None:
 
 
 while len(stack) > 1:
-    print(stack.pop(),end= " -> ")
+    print(stack.pop(), ,end= " -> ")
     
 print(stack.pop(), "\t[", graph[end].d, "steps ]")

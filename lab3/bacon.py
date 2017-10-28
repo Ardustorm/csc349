@@ -10,24 +10,24 @@ if len(sys.argv) < 2:
 
 graph = pickle.load( open(sys.argv[1], "rb") )
 
-
-
-def bfs(start):
-
-    for v in graph.values():
-        v.color = WHITE
-        v.d = math.inf
-        v.pi = None
-        
+def BFS(start):
+    start.color=GRAY
+    start.d=0
     Q = Queue()
-
-    graph[start].color=GRAY
-    graph[start].d=0
-
-    Q.put(graph[start])
-
+    Q.put(start)
+    numWords=0
+    totDepth=0
+    depths={}
+    
     while not Q.empty():
         u = Q.get()
+        numWords+=1
+        totDepth+=u.d
+        if depths.get(u.d)==None:
+            depths[u.d] = 1
+        else:
+            depths[u.d]+=1
+        #u.inDegree=len(u.adj)
         for vWord in u.adj:
             v = graph[vWord]
             if v.color == WHITE:
@@ -36,25 +36,34 @@ def bfs(start):
                 v.color = GRAY
                 Q.put(v)
         u.color=BLACK
+    return [numWords, totDepth, depths]
 
+def initBFS(vals):
+  for v in vals:
+    v.color = WHITE
+    v.d = math.inf
+    v.pi = None
 
-
-##### Generate list of canidates for start
-
-
-
-
-print("outDegree:")
-for n in reversed(sorted(graph.values())):
-    if n.outDegree > 800:
-        print(n.outDegree, n.word)
-        bfs(n.word)
-        total=0
-        for v in graph.values():
-            if v.d != math.inf:
-                total += v.d
-
-        print("TOTAL: ", total)
-    #bfs search to find dist to each, then sum
+def sorter(x):
+    return x[3]/x[2]
     
+def printData(data):
+    for d in data:
+        print("\n"+d[0])
+        print("  Degree:", d[1])
+        #print("  Number of Words:", d[2])
+        #print("  Total Depth:", d[3])
+        print("  Average Path Length:", d[3]/d[2])
+        print("  Hist:", d[4])
+ 
+def main():
+    data=[]
+    for n in reversed(sorted(graph.values())):
+        if n.outDegree > 300:
+            initBFS(graph.values())
+            data.append([n.word, n.outDegree]+BFS(n))
+    data.sort(key=sorter)
+    printData(data)
+        
     
+main()

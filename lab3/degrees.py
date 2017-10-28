@@ -24,13 +24,13 @@ for n in graph:
         hist_out[graph[n].outDegree] += 1
 
         
-print("inDegree:")        
+print("inDegree: (indegree, # of vertices)")        
 for i in sorted(hist_in.items()):
     print(i)
 
 
 
-print("outDegree:")
+print("outDegree: (outdegree, # of vertices)")
 for i in sorted(hist_out.items()):
     print(i)
     
